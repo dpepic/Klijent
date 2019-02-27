@@ -21,28 +21,24 @@ public class KlijentMain
 			InputStream konzola = System.in;
 			InputStreamReader citacKonzole = new InputStreamReader(konzola);
 			BufferedReader odKorisnika = new BufferedReader(citacKonzole);
+			
+			OutputStream kaServeru = konekcija.getOutputStream();
+			OutputStreamWriter upisivac = new OutputStreamWriter(kaServeru);
+			BufferedWriter bUpisivac = new BufferedWriter(upisivac);
 
-
-			while (true)
+			String odgovor;
+			while (true) 
 			{
 				System.out.println("Unesite nesto: ");
 				String poruka = odKorisnika.readLine();
 
-				OutputStream kaServeru = konekcija.getOutputStream();
-				OutputStreamWriter upisivac = new OutputStreamWriter(kaServeru);
-				BufferedWriter bUpisivac = new BufferedWriter(upisivac);
-
 				bUpisivac.write(poruka);
 				bUpisivac.newLine();
 				bUpisivac.flush();
-
-				System.out.println("Ovo je za pauzu, unesi q da izadjes :) ");
-				odKorisnika.readLine();
-				if (bCitac.ready())
-					System.out.println(bCitac.readLine());
+				
+				if (((odgovor = bCitac.readLine()) != null))
+					System.out.println(odgovor);
 			}
-
-
 		} catch (IOException joj)
 		{
 			joj.printStackTrace();
