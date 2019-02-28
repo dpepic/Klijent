@@ -13,6 +13,9 @@ public class KlijentMain
 			InputStreamReader citac = new InputStreamReader(saServera);
 			BufferedReader bCitac = new BufferedReader(citac);
 
+			Slusam osluskivac = new Slusam(bCitac);
+			osluskivac.start();
+
 			//BufferedReader primer = new InputStreamReader(konekcija.GetInputStream());
 			//izlazniTok.read(b) //Ovde su bajti :( :( :(
 			//citac.read(cbuf) //Ovde su karakteri :(
@@ -21,12 +24,11 @@ public class KlijentMain
 			InputStream konzola = System.in;
 			InputStreamReader citacKonzole = new InputStreamReader(konzola);
 			BufferedReader odKorisnika = new BufferedReader(citacKonzole);
-			
+
 			OutputStream kaServeru = konekcija.getOutputStream();
 			OutputStreamWriter upisivac = new OutputStreamWriter(kaServeru);
 			BufferedWriter bUpisivac = new BufferedWriter(upisivac);
 
-			String odgovor;
 			while (true) 
 			{
 				System.out.println("Unesite nesto: ");
@@ -35,14 +37,39 @@ public class KlijentMain
 				bUpisivac.write(poruka);
 				bUpisivac.newLine();
 				bUpisivac.flush();
-				
-				if (((odgovor = bCitac.readLine()) != null))
-					System.out.println(odgovor);
 			}
 		} catch (IOException joj)
 		{
 			joj.printStackTrace();
 		}
 
+	}
+}
+
+class Slusam extends Thread
+{
+	BufferedReader saServera;
+
+	public Slusam(BufferedReader odakle)
+	{
+		this.saServera = odakle;
+	}
+
+	public void run()
+	{
+		while(true)
+		{
+			try
+			{
+				Thread.sleep(1000);
+				while (saServera.ready())
+				{
+					System.out.println(saServera.readLine());
+				}
+			} catch (IOException | InterruptedException joj)
+			{
+				joj.printStackTrace();
+			}
+		}
 	}
 }
